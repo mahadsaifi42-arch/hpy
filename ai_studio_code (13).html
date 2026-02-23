@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Moon (Fatima) 🌙</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%);
+            font-family: 'Quicksand', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        /* Pink Stars Background */
+        .stars { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+        .star {
+            position: absolute; background: #ffb7c5; border-radius: 50%; opacity: 0.6;
+            animation: twinkle infinite ease-in-out;
+        }
+        @keyframes twinkle { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.5); opacity: 1; } }
+
+        /* Main Phone Container */
+        .container {
+            width: 100%; max-width: 420px; height: 100vh; max-height: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #ffccd5;
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(255, 182, 193, 0.4);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- CHAT SCREEN --- */
+        #chatScreen {
+            flex: 1; display: flex; flex-direction: column; padding: 20px;
+            background: #fff5f7; overflow-y: auto; scroll-behavior: smooth;
+        }
+
+        .chat-header {
+            padding: 15px; background: white; border-bottom: 1px solid #ffe0e6;
+            display: flex; align-items: center; gap: 10px; font-weight: 700; color: #ff4d6d;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .avatar { width: 40px; height: 40px; background: #ffccd5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+        .bubble {
+            max-width: 80%; padding: 12px 16px; margin-bottom: 12px; border-radius: 18px;
+            font-size: 14px; position: relative; opacity: 0; transform: translateY(10px);
+            animation: msgPop 0.3s forwards; line-height: 1.5;
+        }
+        .received { background: white; align-self: flex-start; border-bottom-left-radius: 4px; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .sent { background: #ff4d6d; align-self: flex-end; border-bottom-right-radius: 4px; color: white; box-shadow: 0 2px 5px rgba(255, 77, 109, 0.3); }
+        .typing { font-size: 12px; color: #aaa; margin-left: 10px; margin-bottom: 5px; display: none; font-style: italic; }
+
+        @keyframes msgPop { to { opacity: 1; transform: translateY(0); } }
+
+        /* --- STORY MODE --- */
+        .story-screen {
+            display: none; height: 100%; flex-direction: column; align-items: center; justify-content: center;
+            padding: 25px; text-align: center; animation: fadeIn 0.8s ease;
+        }
+        
+        .card {
+            background: white; padding: 20px; border-radius: 20px; width: 100%;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.15); margin-bottom: 20px;
+            border: 1px solid #ffe0e6; text-align: left;
+            border-left: 5px solid #ff4d6d;
+        }
+
+        h1 { font-family: 'Dancing Script'; font-size: 2.5rem; color: #ff4d6d; margin-bottom: 10px; }
+        p { color: #555; font-size: 15px; margin-bottom: 15px; line-height: 1.6; }
+        .highlight { color: #ff4d6d; font-weight: 700; }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(45deg, #ff9a9e, #ff69b4); color: white; border: none;
+            padding: 14px 35px; border-radius: 50px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4); font-size: 1rem;
+            margin-top: 10px;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        /* Runaway Btn */
+        .run-btn { position: absolute; background: #555; font-size: 12px; padding: 10px 15px; }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<!-- Stars Background -->
+<div class="stars" id="stars"></div>
+<script>
+    const sCont = document.getElementById('stars');
+    for(let i=0; i<30; i++){
+        let s = document.createElement('div'); s.className='star';
+        s.style.width = Math.random()*10+'px'; s.style.height=s.style.width;
+        s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+        s.style.animationDuration = Math.random()*3+2+'s';
+        sCont.appendChild(s);
+    }
+</script>
+
+<div class="container">
+
+    <!-- SCREEN 1: REALISTIC CHAT -->
+    <div id="screen1" style="height: 100%; display: flex; flex-direction: column;">
+        <div class="chat-header">
+            <div class="avatar">🌙</div>
+            <div>Fatima Ji 🤍<br><span style="font-size:11px; color:#aaa; font-weight:400;">Online</span></div>
+        </div>
+        
+        <div id="chatScreen"></div>
+        <div id="typingIndicator" class="typing">Fatima is typing...</div>
+
+        <!-- Hidden Start Button -->
+        <div id="startBtnArea" style="padding: 20px; background: white; display: none;">
+            <button class="btn" style="width: 100%;" onclick="startStory()">Ruko! Galti Sudharne Do 🛑</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: BACKSTORY (Wattverse) -->
+    <div id="screen2" class="story-screen">
+        <h1>Jahan Se Shuru Hua...</h1>
+        <div class="card">
+            <p><strong>Wattverse & Block Incident</strong></p>
+            <p>Yaad hai apko? Main bada attitude mein tha, "IDGAF" mood mein. Par apka message aaya tha.</p>
+            <p>Apne us din mujhe <span class="highlight">Block</span> kar diya tha.</p>
+            <p>Wo <strong>15 minute</strong> jab main blocked tha... us waqt mujhe pehli baar ehsaas hua ki main apko khona nahi chahta. ❤️</p>
+        </div>
+        <button class="btn" onclick="next('screen3')">Phir Kya Hua? 👇</button>
+    </div>
+
+    <!-- SCREEN 3: BACKSTORY (Jealousy) -->
+    <div id="screen3" class="story-screen">
+        <h1>Apki Jalan... 😠</h1>
+        <div class="card">
+            <p><strong>Insta GC Wali Baat</strong></p>
+            <p>Main wahan timepass kar raha tha, par apko acha nahi laga.</p>
+            <p>Apne kaha tha: <em>"Inse baat mat kar, mujhe jalan hoti hai."</em></p>
+            <p>Bas! Us din Rexx badal gaya. Us din maine sabko side kar diya, sirf <span class="highlight">Apke</span> liye.</p>
+        </div>
+        <button class="btn" onclick="next('screen4')">Mummy Ko Bataya 🥺</button>
+    </div>
+
+    <!-- SCREEN 4: THE COMMITMENT -->
+    <div id="screen4" class="story-screen">
+        <h1>17 June & Mummy 💍</h1>
+        <div class="card">
+            <p>Maine kaha "I Love You".</p>
+            <p>Apne kaha tha <strong>"Ghar Rishta Leke Aana."</strong></p>
+            <p>Main darra nahi. Maine usi din decide kar liya aur <span class="highlight">Mummy ko bata diya</span>.</p>
+            <p>Main Pakistan ghumne nahi aaunga, main <strong>Apko</strong> lene aaunga. ❤️</p>
+        </div>
+        <button class="btn" onclick="next('screen5')">Aaj Ki Galti... 🤦‍♂️</button>
+    </div>
+
+    <!-- SCREEN 5: THE MISTAKE (EID) -->
+    <div id="screen5" class="story-screen">
+        <div style="font-size: 60px;">🤦‍♂️</div>
+        <h1>Main Gadha Hoon...</h1>
+        <div class="card" style="background: #fff0f3;">
+            <p>Apne pucha <strong>"Chaand dekha?"</strong></p>
+            <p>Maine pucha <strong>"Eid hai kya?"</strong></p>
+            <br>
+            <p style="font-style: italic;">"Sach kahun toh... Mujhe laga Eid hai, kyunki <strong>Ap</strong> meri Eid hain."</p>
+            <p>(Thoda cheesy hai par sach hai! 🙈)</p>
+            <p>Sorry main Apka <span class="highlight">Urdu Birthday</span> bhool gaya.</p>
+        </div>
+        <button class="btn" onclick="next('screen6')">Wish Karunga Ab 🎂</button>
+    </div>
+
+    <!-- SCREEN 6: THE WISH (MOON) -->
+    <div id="screen6" class="story-screen">
+        <div style="font-size: 80px;">🌝</div>
+        <h1>Chaand Mubarak!</h1>
+        <p>Meri taraf se (Chaand ke hisaab se)...</p>
+        <h2 style="color: #ff4d6d; font-size: 2rem;">Happy Birthday Fatima!</h2>
+        <p>Allah apko hamesha khush rakhe aur mujhe apke nakhre uthane ki taqat de. Ameen. ✨</p>
+        <button class="btn" onclick="next('screen7')">Maafi? 🙏</button>
+    </div>
+
+    <!-- SCREEN 7: RUNAWAY BUTTON -->
+    <div id="screen7" class="story-screen">
+        <div style="font-size: 60px;">🐒</div>
+        <h1>Maaf Kar Do?</h1>
+        <p>Dekhiye, main Angrez hoon par dil se Desi hoon.</p>
+        <p>Maan jayiye na? Warna main Mummy ko shikayat laga dunga.</p>
+        
+        <div style="height: 150px; position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <button class="btn" onclick="celebrate()">Theek hai, Maaf Kiya 💖</button>
+            <button class="btn run-btn" id="noBtn" onmouseover="runAway()" onclick="runAway()">Nahi 😤</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- CHAT SYSTEM (REALISTIC TYPING) ---
+    const messages = [
+        { sender: 'fatima', text: 'Suniye Rexx...' },
+        { sender: 'rexx', text: 'Jee boliye? ❤️' },
+        { sender: 'fatima', text: 'Apne aaj ka chaand dekha? 🌙' },
+        { sender: 'rexx', text: 'Kyun? Eid hai kya aaj? 🤔' },
+        { sender: 'fatima', text: '...' },
+        { sender: 'fatima', text: 'Hadh hai! 👏 Mera Urdu Birthday hai aaj!' },
+        { sender: 'fatima', text: 'Apse baat karna hi bekaar hai. Bye. 🚫' },
+        { sender: 'rexx', text: 'Arey rukiye! Shit! 😨' }
+    ];
+
+    let msgIndex = 0;
+    const chatBox = document.getElementById('chatScreen');
+    const typeIndicator = document.getElementById('typingIndicator');
+
+    function addMessage() {
+        if (msgIndex < messages.length) {
+            const msg = messages[msgIndex];
+            
+            // Show typing if it's Fatima
+            if (msg.sender === 'fatima') {
+                typeIndicator.style.display = 'block';
+                setTimeout(() => {
+                    typeIndicator.style.display = 'none';
+                    appendBubble(msg);
+                    msgIndex++;
+                    setTimeout(addMessage, 1200); // Thoda pause real lagne ke liye
+                }, 1000); 
+            } else {
+                // Rexx replies instantly
+                setTimeout(() => {
+                    appendBubble(msg);
+                    msgIndex++;
+                    addMessage();
+                }, 500);
+            }
+        } else {
+            // Chat End
+            document.getElementById('startBtnArea').style.display = 'block';
+        }
+    }
+
+    function appendBubble(msg) {
+        const div = document.createElement('div');
+        div.className = `bubble ${msg.sender === 'rexx' ? 'sent' : 'received'}`;
+        div.innerText = msg.text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Start Chat on Load
+    window.onload = () => { setTimeout(addMessage, 500); };
+
+    // --- NAVIGATION ---
+    function startStory() {
+        document.getElementById('screen1').style.display = 'none';
+        document.getElementById('screen2').style.display = 'flex';
+    }
+
+    function next(id) {
+        document.querySelectorAll('.story-screen').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'flex';
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } }); 
+    }
+
+    // --- RUNAWAY ---
+    function runAway() {
+        const btn = document.getElementById('noBtn');
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 150 - 75;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // --- CELEBRATION ---
+    function celebrate() {
+        alert("I Love You Fatima! ❤️\nHappy Birthday (Moon Wala)!");
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
+</script>
+
+</body>
+</html>
